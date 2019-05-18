@@ -45,28 +45,57 @@ int y;
 int xapple = random(8);
 int yapple = random(8);
 boolean gotApple = false; 
+int direction = 0;
+int applesEaten = 0;
+int marker = 2;
+
+struct Point
+{
+  int x;
+  int y;
+};
+
+Point s1 = {3, 4};
+Point s2 = {2, 4};
+
+Point snakeArray[64] = {s1, s2};
 
 void setup()
 {
  MeggyJrSimpleSetup();
  x = 3;
- y = 4;
+ y = 4; 
 }
 
 void loop() 
 {
   snake();
   spawnApple();
-  moveSnake();
   eatApple();
+  //leds();
   DisplaySlate();
-  delay(100);
+  delay(150);
   ClearSlate();
+  updateSnake();
+  moveSnake();
 }
 
 void snake()
 {
-  DrawPx(x, y, Red);
+  //DrawPx(x, y, Red);
+  for (int i = 0; i < marker; i++)
+  {
+    DrawPx(snakeArray[i].x, snakeArray[i].y, Red);
+  }
+}
+
+void updateSnake()
+{
+  for (int i = marker - 1; i > 0; i--)
+  {
+    snakeArray[i].x = snakeArray[i - 1].x;
+    snakeArray[i].y = snakeArray[i - 1].y;
+  }
 }
 
 void moveSnake()
@@ -74,46 +103,62 @@ void moveSnake()
   CheckButtonsPress();
   if (Button_Left)
   {
-    if (x > 0)
+    direction = 180;
+  }
+  if (direction == 180)
+  {
+    if (snakeArray[0].x > 0)
     {
-      x--;
+      snakeArray[0].x--;
     }
     else
     {
-      x = 7;
+      snakeArray[0].x = 7;
     }
   }
   if (Button_Right)
   {
-    if (x < 7)
+    direction = 0;
+  }
+  if (direction == 0)
+  {
+    if (snakeArray[0].x < 7)
     {
-      x++;
+      snakeArray[0].x++;
     }
     else
     {
-      x = 0;
+      snakeArray[0].x = 0;
     }
   }
   if (Button_Up)
   {
-    if (y < 7)
+    direction = 90;
+  }
+  if (direction == 90)
+  {
+    if (snakeArray[0].y < 7)
     {
-      y++;
+      snakeArray[0].y++;
     }
     else
     {
-      y = 0;
+      snakeArray[0].y = 0;
     }
   }
   if (Button_Down)
   {
-    if (y > 0)
+    direction = 270;
+  }
+  if (direction == 270)
+  {
+    if (snakeArray[0].y > 0)
     {
-      y--;
+      snakeArray[0].y--;
     }
     else
     {
-      y = 7;
+       snakeArray[0].y = 7;
     }
   }
 }
@@ -125,11 +170,13 @@ void spawnApple()
 
 void eatApple()
 {
-  if (xapple == x)
+  if (xapple == snakeArray[0].x)
   {
-    if (yapple == y)
+    if (yapple == snakeArray[0].y)
     {
       gotApple = true;
+      applesEaten++;
+      marker++;
     }
   }
   else
@@ -142,3 +189,13 @@ void eatApple()
    yapple = random(8); 
   }
 }
+
+/* void leds()
+{
+  if (gotApple == true)
+  {
+    applesEaten * 2;
+  }
+  SetAuxLEDs(applesEaten - 1);
+}
+*/
