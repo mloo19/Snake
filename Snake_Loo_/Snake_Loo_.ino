@@ -175,6 +175,7 @@ void eatApple()
     if (yapple == snakeArray[0].y)
     {
       gotApple = true;
+      Tone_Start(ToneA3, 50);
       applesEaten++;
       marker++;
     }
