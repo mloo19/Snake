@@ -69,10 +69,11 @@ void setup()
 
 void loop() 
 {
-  snake();
+  drawHead();
   spawnApple();
+  drawBody();
+  die();
   eatApple();
-  //leds();
   DisplaySlate();
   delay(150);
   ClearSlate();
@@ -80,31 +81,26 @@ void loop()
   moveSnake();
 }
 
-void snake()
+void drawBody()
 {
-  //DrawPx(x, y, Red);
-  for (int i = 0; i < marker; i++)
+  for (int i = 1; i < marker; i++)
   {
     DrawPx(snakeArray[i].x, snakeArray[i].y, Red);
   }
+}
+
+void drawHead()
+{
+  DrawPx(snakeArray[0].x, snakeArray[0].y, Blue);
 }
 
 void updateSnake()
 {
   for (int i = marker - 1; i > 0; i--)
   {
-    snakeArray[i].x = snakeArray[i - 1].x;
-    snakeArray[i].y = snakeArray[i - 1].y;
+    snakeArray[i] = snakeArray[i - 1];
   }
-}
-
-void moveSnake()
-{
-  CheckButtonsPress();
-  if (Button_Left)
-  {
-    direction = 180;
-  }
+  
   if (direction == 180)
   {
     if (snakeArray[0].x > 0)
@@ -115,10 +111,6 @@ void moveSnake()
     {
       snakeArray[0].x = 7;
     }
-  }
-  if (Button_Right)
-  {
-    direction = 0;
   }
   if (direction == 0)
   {
@@ -131,10 +123,6 @@ void moveSnake()
       snakeArray[0].x = 0;
     }
   }
-  if (Button_Up)
-  {
-    direction = 90;
-  }
   if (direction == 90)
   {
     if (snakeArray[0].y < 7)
@@ -146,10 +134,6 @@ void moveSnake()
       snakeArray[0].y = 0;
     }
   }
-  if (Button_Down)
-  {
-    direction = 270;
-  }
   if (direction == 270)
   {
     if (snakeArray[0].y > 0)
@@ -160,7 +144,32 @@ void moveSnake()
     {
        snakeArray[0].y = 7;
     }
+  } 
+}
+
+void moveSnake()
+{
+  CheckButtonsPress();
+  if (Button_Left)
+  {
+    direction = 180;
   }
+  
+  if (Button_Right)
+  {
+    direction = 0;
+  }
+  
+  if (Button_Up)
+  {
+    direction = 90;
+  }
+  
+  if (Button_Down)
+  {
+    direction = 270;
+  }
+  
 }
 
 void spawnApple()
@@ -191,12 +200,18 @@ void eatApple()
   }
 }
 
-/* void leds()
+void die()
 {
-  if (gotApple == true)
+  if (ReadPx(snakeArray[0].x, snakeArray[0].y) == Red)
   {
-    applesEaten * 2;
+    ClearSlate();
+    marker = 2;
+    snakeArray[0].x = 3;
+    snakeArray[0].y = 4;
+    snakeArray[1].x = 2;
+    snakeArray[1].y = 4;
+    DisplaySlate();
+    Tone_Start(ToneG4, 800);
+    delay(1000);
   }
-  SetAuxLEDs(applesEaten - 1);
 }
-*/
